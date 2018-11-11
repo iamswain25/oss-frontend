@@ -8,12 +8,11 @@ const initialState = {
   speed: 0,
   location: "",
   amount: 0,
-  price: 0,
-  path: "/storage1"
+  price: 0
 };
 class CreatePost extends Component {
   constructor() {
-    super()
+    super();
     this.state = initialState;
   }
 
@@ -41,16 +40,6 @@ class CreatePost extends Component {
             name="title"
             value={this.state.title}
             onChange={this.handleOnChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>Path</label>
-          <input
-            className="margin-bottom-15"
-            name="path"
-            value={this.state.path}
-            onChange={this.handleOnChange}
-            placeholder="Path"
           />
         </Form.Field>
         <Form.Field>
