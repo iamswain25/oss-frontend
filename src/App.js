@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Main from "Main";
-import image from "./assets/styles/img/image.png"
-import img2 from "./assets/styles/img/oss_logo_banner.png"
+import logo from "./assets/styles/img/oss_logo.png"
+// import image from "./assets/styles/img/image.png"
+// import img2 from "./assets/styles/img/oss_logo_banner.png"
 
 import { Container, Form, Button, Header, Segment, Image } from "semantic-ui-react";
 class App extends Component {
@@ -19,7 +20,7 @@ class App extends Component {
       <Segment placeholder style={{ padding: "20%" }}>
         <Container>
           {/* <Image src={image} size='small'/> */}
-          <Image src={img2} size='large'/>
+          <Image src={logo} size='large'/>
           <Header as="h1">Welcome to your Online Smart Storage</Header>
           <Form>
             <Form.Field style={{ maxWidth: "100%" }}>
