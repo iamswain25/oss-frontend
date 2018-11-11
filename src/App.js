@@ -60,6 +60,7 @@ class App extends Component {
       await response.data.forEach(post => {
         post.speed = Math.round(Math.random() * 100);
         post.location = "United States";
+        post.price = Math.round(Math.random() * 100);
       });
     }
 
@@ -97,7 +98,6 @@ class App extends Component {
       this.setState(prevState => ({
         posts: updatePostsForCreateAndEdit(prevState, newPost)
       }));
-      this.toggleCreate();
     } catch (err) {
       console.error(err);
     }
@@ -165,7 +165,7 @@ class App extends Component {
     const locationsFilters = Object.keys(searchObject.locationFilter)
       .filter(key => searchObject.locationFilter[key].enabled === true)
       .toString();
-    console.log(locationsFilters);
+    // console.log(locationsFilters);
     this.setState(prevState => ({
       postsShowing: prevState.posts
         .filter(
@@ -178,6 +178,11 @@ class App extends Component {
           post =>
             post.speed >= searchObject.speedRange[0] &&
             post.speed <= searchObject.speedRange[1]
+        )
+        .filter(
+          post =>
+            post.price >= searchObject.priceRange[0] &&
+            post.price <= searchObject.priceRange[1]
         )
         .filter(post => locationsFilters.indexOf(post.location) !== -1)
     }));

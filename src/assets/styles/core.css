@@ -184,25 +184,26 @@ button, .btn, submit {
   position: fixed;
   top: 48px;
   right: 30px;
-  height: 60px;
-  width: 60px;
+  height: 100px;
+  width: 100px;
   border-radius: 50%;
   background: #141C47;
   cursor: pointer;
   background: linear-gradient(135deg, #5fe2dc 0%, #0d5de4 100%); }
   .layoutStandard .toggleCreate:hover {
     background: linear-gradient(135deg, #0d5de4 0%, #5fe2dc 100%); }
-  .layoutStandard .toggleCreate:before, .layoutStandard .toggleCreate:after {
+  .layoutStandard .toggleCreate:before {
     display: block;
-    background: #ffffff;
-    height: 3px;
-    width: 30px;
+    background: transparent;
+    height: 30px;
+    width: 60px;
     position: absolute;
-    left: 15px;
-    top: 30px;
-    content: ""; }
-  .layoutStandard .toggleCreate:after {
-    transform: rotate(90deg); }
+    left: 18px;
+    top: 26px;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    content: "Sell Storage"; }
 
 .layoutStandard.createOpen .createContainer {
   max-height: fit-content;

@@ -2,7 +2,7 @@
 
 ## Starting Front-End
 
-* npm install
+* npm i semantic-ui-css semantic-ui-react rc-slider
 * npm start
 
 ## Running Tests

@@ -2,15 +2,25 @@ import React from "react";
 
 import Post from "Posts/Post/Post";
 import SearchBar from "./SearchBar";
-import { Card, Container } from "semantic-ui-react";
-const Posts = ({ posts, deletePost, editPost, likePost, filterSearch, originalPosts }) => {
+import { Card, Container, Segment, Icon, Header } from "semantic-ui-react";
+const Posts = ({
+  posts,
+  deletePost,
+  editPost,
+  likePost,
+  filterSearch,
+  originalPosts
+}) => {
   // console.log(postsMeta, posts)
   return (
     <Container>
-      <SearchBar
-        filterSearch={filterSearch}
-        originalPosts={originalPosts}
-      />
+      <Segment>
+        <Header>
+          <Icon name="filter" />
+          <Header.Content>Search</Header.Content>
+        </Header>
+        <SearchBar filterSearch={filterSearch} originalPosts={originalPosts} />
+      </Segment>
       <Card.Group>
         {posts.map(post => (
           <Post
