@@ -1,213 +1,53 @@
 import React, { Component } from "react";
-import axios from "axios";
+import Main from "Main";
+import image from "./assets/styles/img/image.png"
+import img2 from "./assets/styles/img/oss_logo_banner.png"
 
-import EOSIOClient from "utils/eosio-client";
-import IOClient from "utils/io-client";
-import {
-  updatePostsForCreateAndEdit,
-  updatePostsForLike,
-  updatePostsForDelete
-} from "utils/posts-updater";
-import CreatePost from "CreatePost/CreatePost";
-
-import Posts from "Posts/Posts";
-import { Modal } from "semantic-ui-react";
+import { Container, Form, Button, Header, Segment, Image } from "semantic-ui-react";
 class App extends Component {
   state = {
-    createOpen: false,
-    posts: [],
-    postsShowing: [],
-    postsMeta: {}
+    REACT_APP_EOSIO_PRIVATE_KEY: "5K7mtrinTFrVTduSxizUc5hjXJEtTjVTsqSHeBHes1Viep86FP5",
+    show: true
   };
-
-  // Instantiate shared eosjs helper and socket io helper
-  constructor(props) {
-    super(props);
-    const contractAccount = process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT;
-    this.eosio = new EOSIOClient(contractAccount);
-    this.io = new IOClient();
-  }
-
-  // Enable Realtime updates via Socket.io
-  async componentDidMount() {
-    this.loadPosts();
-    this.io.onMessage("createpost", post => {
-      this.setState(prevState => ({
-        posts: updatePostsForCreateAndEdit(prevState, post)
-      }));
-    });
-    this.io.onMessage("editpost", post => {
-      this.setState(prevState => ({
-        posts: updatePostsForCreateAndEdit(prevState, post)
-      }));
-    });
-    this.io.onMessage("deletepost", post => {
-      this.setState(prevState => ({
-        posts: updatePostsForDelete(prevState, post)
-      }));
-    });
-    this.io.onMessage("likepost", post => {
-      this.setState(prevState => ({
-        posts: updatePostsForLike(prevState, post)
-      }));
-    });
-  }
-
-  // Load posts
-  loadPosts = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts`);
-    if (process.env.NODE_ENV === "development") {
-      await response.data.forEach(post => {
-        post.speed = Math.round(Math.random() * 100);
-        post.location = "United States";
-        post.price = Math.round(Math.random() * 100);
-      });
-    }
-
-    // const locationFilter = getLocations(response.data);
-    // const speedRange = getSpeedRange(response.data);
-    // console.log(locationFilter, speedRange)
-    this.setState({
-      posts: response.data.reverse(),
-      postsShowing: response.data.reverse()
-      // postsMeta: { locationFilter, speedRange, keyword }
-    });
+  onPrivateKeyChange = ({ target }) =>
+    this.setState({ REACT_APP_EOSIO_PRIVATE_KEY: target.value });
+  nextStep = e => {
+    this.setState({ show: false });
   };
-
-  // Create a post
-  createPost = async post => {
-    try {
-      const newPost = {
-        ...post,
-        _id: {
-          timestamp: Math.floor(Date.now() / 1000),
-          author: process.env.REACT_APP_EOSIO_ACCOUNT
-        },
-        author: process.env.REACT_APP_EOSIO_ACCOUNT
-      };
-
-      await this.eosio.transaction(
-        process.env.REACT_APP_EOSIO_ACCOUNT,
-        "createpost",
-        {
-          timestamp: newPost._id.timestamp,
-          author: newPost._id.author,
-          ...post
-        }
-      );
-      this.setState(prevState => ({
-        posts: updatePostsForCreateAndEdit(prevState, newPost)
-      }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Edit a post
-  editPost = async post => {
-    try {
-      await this.eosio.transaction(
-        process.env.REACT_APP_EOSIO_ACCOUNT,
-        "editpost",
-        {
-          timestamp: post._id.timestamp,
-          author: post._id.author,
-          ...post
-        }
-      );
-      this.setState(prevState => ({
-        posts: updatePostsForCreateAndEdit(prevState, post)
-      }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Delete a post
-  deletePost = async post => {
-    try {
-      await this.eosio.transaction(
-        process.env.REACT_APP_EOSIO_ACCOUNT,
-        "deletepost",
-        {
-          timestamp: post._id.timestamp,
-          author: post._id.author
-        }
-      );
-      this.setState(prevState => ({
-        posts: updatePostsForDelete(prevState, post)
-      }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Like a post
-  likePost = async post => {
-    try {
-      await this.eosio.transaction(
-        process.env.REACT_APP_EOSIO_ACCOUNT,
-        "likepost",
-        {
-          timestamp: post._id.timestamp,
-          author: post._id.author
-        }
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  //filter search
-  filterSearch = searchObject => {
-    // const searchObject = this.state.postsMeta;
-    // console.log(searchObject)
-    const locationsFilters = Object.keys(searchObject.locationFilter)
-      .filter(key => searchObject.locationFilter[key].enabled === true)
-      .toString();
-    // console.log(locationsFilters);
-    this.setState(prevState => ({
-      postsShowing: prevState.posts
-        .filter(
-          post =>
-            post.title
-              .toLowerCase()
-              .indexOf(searchObject.keyword.toLowerCase()) !== -1
-        )
-        .filter(
-          post =>
-            post.speed >= searchObject.speedRange[0] &&
-            post.speed <= searchObject.speedRange[1]
-        )
-        .filter(
-          post =>
-            post.price >= searchObject.priceRange[0] &&
-            post.price <= searchObject.priceRange[1]
-        )
-        .filter(post => locationsFilters.indexOf(post.location) !== -1)
-    }));
-  };
-  render() {
+  render1() {
     return (
-      <div className={`layoutStandard`}>
-        <div className="logo">Online Smart Storage</div>
-        <div className="main">
-          <Modal trigger={<div className="toggleCreate" />}>
-            <CreatePost createPost={this.createPost} />
-          </Modal>
-
-          <Posts
-            filterSearch={this.filterSearch}
-            originalPosts={this.state.posts}
-            posts={this.state.postsShowing}
-            handleOnChange={this.handleOnChange}
-            deletePost={this.deletePost}
-            editPost={this.editPost}
-            likePost={this.likePost}
-          />
-        </div>
-      </div>
+      <Segment placeholder style={{ padding: "20%" }}>
+        <Container>
+          {/* <Image src={image} size='small'/> */}
+          <Image src={img2} size='large'/>
+          <Header as="h1">Welcome to your Online Smart Storage</Header>
+          <Form>
+            <Form.Field style={{ maxWidth: "100%" }}>
+              <label>Enter Private Key</label>
+              <input
+                type="text"
+                value={this.state.REACT_APP_EOSIO_PRIVATE_KEY}
+                placeholder="5K7mtrinTFrVTduSxizUc5hjXJEtTjVTsqSHeBHes1Viep86FP5"
+                maxLength="51"
+                minLength="51"
+                onChange={this.onPrivateKeyChange}
+                // style={{  }}
+              />
+            </Form.Field>
+            <Button type="submit" onClick={this.nextStep}>
+              Enter
+            </Button>
+          </Form>
+        </Container>
+      </Segment>
     );
+  }
+  render2() {
+    return <Main />;
+  }
+  render() {
+    console.log(this.state.show);
+    return this.state.show ? this.render1() : this.render2();
   }
 }
 App.displayName = "App"; // Tell React Dev Tools the component name
