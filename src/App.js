@@ -17,7 +17,7 @@ class App extends Component {
   };
   render1() {
     return (
-      <Segment placeholder style={{ padding: "20%" }}>
+      <Segment placeholder style={{ padding: "10%" }}>
         <Container>
           {/* <Image src={image} size='small'/> */}
           <Image src={logo} size='large'/>
